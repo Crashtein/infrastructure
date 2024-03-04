@@ -40,7 +40,7 @@ credentials:
     domainCredentials:
       - credentials:
           - basicSSHUserPrivateKey:
-              scope: SYSTEM
+              scope: GLOBAL
               id: jenkins_agent
               username: jenkins
               passphrase: ''
