@@ -10,9 +10,9 @@ services:
     volumes:
        - ./jenkins_controller/jenkins.yaml:/usr/share/jenkins/ref/jenkins.yaml
     restart: always
-    depends_on:
-      artifactory:
-        condition: service_healthy
+#    depends_on:
+#      artifactory:
+#        condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/static/<anystring>/images/svgs/logo.svg"]
       start_period: 30s
@@ -41,18 +41,36 @@ services:
       jenkins:
         condition: service_healthy
     restart: always
-  artifactory:
-    image: docker.bintray.io/jfrog/artifactory-jcr:7.39.4
-    container_name: artifactory
-    volumes:
-      - ./artifactory:/artifactory_extra_conf/
+#  artifactory:
+#    image: docker.bintray.io/jfrog/artifactory-jcr:7.39.4
+#    container_name: artifactory
+#    volumes:
+#      - ./artifactory:/artifactory_extra_conf/
+#    ports:
+#      - 8081:8081
+#      - 8082:8082
+#    healthcheck:
+#      test: ["CMD", "curl", "-f", "http://localhost:8082/artifactory/api/system/ping"]
+#      start_period: 30s
+#      interval: 5s
+#      timeout: 10s
+#      retries: 30
+#    restart: always
+  selenium_hub:
+    image: selenium/hub:latest
+    container_name: selenium_hub
     ports:
-      - 8081:8081
-      - 8082:8082
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8082/artifactory/api/system/ping"]
-      start_period: 30s
-      interval: 5s
-      timeout: 10s
-      retries: 30
+      - 4442:4442
+      - 4443:4443
+      - 4444:4444
+    restart: always
+  selenium_node:
+    image: selenium/node-firefox:latest
+    container_name: firefox
+    depends_on:
+      - selenium_hub
+    environment:
+      - SE_EVENT_BUS_HOST=selenium_hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
     restart: always

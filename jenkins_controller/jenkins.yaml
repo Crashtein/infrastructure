@@ -21,7 +21,7 @@ jenkins:
       name: "agent"
       remoteFS: "/home/jenkins/agent"
       retentionStrategy: "always"
-
+      numExecutors: 2
 tool:
   sonarRunnerInstallation:
     installations:
